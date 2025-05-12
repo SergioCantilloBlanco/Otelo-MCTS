@@ -1,5 +1,8 @@
-from othello import Othello
+from othello import OthelloGame
 
 class OthelloAgent():
-  def choose_move(self, game: Othello):
+  player = None
+  def __init__(self, player):
+    self.player = player
+  def choose_move(self, game: OthelloGame):
     pass

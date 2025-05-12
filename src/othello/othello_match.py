@@ -1,17 +1,22 @@
-from othello import Othello
-from agents.random_othello_agent import RandomOthelloAgent
-juego = Othello()
+from othello import OthelloGame
+from random_othello_agent import RandomOthelloAgent
+from othello_interface import draw_board
+
+game = OthelloGame()
 
 current_player = 2
 
-player1 = RandomOthelloAgent()
-player2 = RandomOthelloAgent()
+player1 = RandomOthelloAgent(1)
+player2 = RandomOthelloAgent(2)
 
-while not juego.has_finished():
-  if juego.get_valid_moves(current_player) != []:
+while not game.has_finished():
+  draw_board(game.board)
+  input()
+  if game.get_valid_moves(current_player) != []:
       active_player = player1 if current_player==1 else player2
-      juego.jugar_movimiento(active_player.choose_move(juego), current_player)
+      game.play_move(active_player.choose_move(game), current_player)
 
-  current_player = (current_player+1)%2
-
-print(juego.tablero)
+  if current_player ==1:
+     current_player = 2
+  else:
+     current_player = 1

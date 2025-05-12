@@ -1,114 +1,114 @@
 import numpy as np
 
-direcciones = [(1,0), (-1,0), (0,1), (0,-1) , (1,1) , (1,-1), (-1,1) ,(-1,-1)]
+directions = [(1,0), (-1,0), (0,1), (0,-1) , (1,1) , (1,-1), (-1,1) ,(-1,-1)]
 
-def crear_tablero():
-    tablero = np.zeros((8,8),dtype=int)
+def create_new_board():
+    board = np.zeros((8,8),dtype=int)
 
-    tablero[3,3] = 1
-    tablero[4,4] = 1
-    tablero[4,3] = 2
-    tablero[3,4] = 2
-    return tablero
+    board[3,3] = 1
+    board[4,4] = 1
+    board[4,3] = 2
+    board[3,4] = 2
+    return board
 
-def actualizar_linea(tablero, posicion, jugador, direccion):
-    seguir_buscando = True
-    fila,columna = posicion
-    direccion_fila, direccion_columna = direccion
-    fichas_a_cambiar = []
-    while(seguir_buscando):
-        fila += direccion_fila
-        columna += direccion_columna
+def update_line(board, position, player, direction):
+    keep_searching = True
+    row,column = position
+    row_direction, column_direction = direction
+    positions_to_invert = []
+    while(keep_searching):
+        row += row_direction
+        column += column_direction
 
-        if not (0 <= fila <= 7 and 0 <= columna <= 7):
-          seguir_buscando = False
+        if not (0 <= row <= 7 and 0 <= column <= 7):
+          keep_searching = False
           break
 
 
-        if(tablero[fila,columna] == 0):
-            seguir_buscando = False
-        elif(tablero[fila,columna] != jugador):
-            fichas_a_cambiar.append((fila, columna))
+        if(board[row,column] == 0):
+            keep_searching = False
+        elif(board[row,column] != player):
+            positions_to_invert.append((row, column))
         else:
-            for ficha in fichas_a_cambiar:
-                f,l = ficha
-                tablero[f,l]  = jugador
-            seguir_buscando = False
-    return tablero
+            for position_to_invert in positions_to_invert:
+                row_to_invert,column_to_invert = position_to_invert
+                board[row_to_invert,column_to_invert]  = player
+            keep_searching = False
+    return board
 
-def calcular_movimentos_validos(tablero, jugador):
+def get_valid_moves(board, player):
 
-    posiciones_validas = []
+    valid_moves = []
 
-    for fila in range(8):
-        for columna in range(8):
-            if tablero[fila,columna] == 0:
-              if(comprobar_validez_movimiento(tablero, (fila,columna), jugador)):
-                  posiciones_validas.append((fila, columna))
-    return posiciones_validas
-
-
-def comprobar_movimiento_direccion_valido(tablero, posicion, jugador, direccion):
-    seguir_buscando = True
-    fila,columna = posicion
-    direccion_fila, direccion_columna = direccion
-    hay_ficha_en_medio = False
-    while(seguir_buscando):
-        fila += direccion_fila
-        columna += direccion_columna
+    for row in range(8):
+        for column in range(8):
+            if board[row,column] == 0:
+              if(check_valid_move(board, (row,column), player)):
+                  valid_moves.append((row, column))
+    return valid_moves
 
 
-        if not (0 <= fila <= 7 and 0 <= columna <= 7):
+def check_valid_move_in_direction(board, position, player, direction):
+    keep_searching = True
+    row,column = position
+    row_direction, column_direction = direction
+    found_an_oposite_tile_between = False
+    while(keep_searching):
+        row += row_direction
+        column += column_direction
+
+
+        if not (0 <= row <= 7 and 0 <= column <= 7):
           return False
 
-        if(tablero[fila,columna] == 0):
+        if(board[row,column] == 0):
             return False
-        elif(tablero[fila,columna] != jugador):
-            hay_ficha_en_medio = True
+        elif(board[row,column] != player):
+            found_an_oposite_tile_between = True
         else:
-            return hay_ficha_en_medio
-def actualizar_tablero(tablero, posicion, jugador):
-      fila,columna = posicion
-      tablero[fila,columna] = jugador
+            return found_an_oposite_tile_between
+def update_board(board, position, player):
+      fila,columna = position
+      board[fila,columna] = player
 
-      for direccion in direcciones:
-        tablero = actualizar_linea(tablero.copy(), posicion, jugador, direccion)
+      for direccion in directions:
+        board = update_line(board.copy(), position, player, direccion)
 
 
-      return tablero
+      return board
 
-def comprobar_validez_movimiento(tablero, posicion, jugador):
-    fila, columna = posicion
-    for direccion in direcciones:
-      if comprobar_movimiento_direccion_valido(tablero, (fila, columna) , jugador, direccion):
+def check_valid_move(board, position, player):
+    row, column = position
+    for direction in directions:
+      if check_valid_move_in_direction(board, (row, column) , player, direction):
         return True
     return False
 
-def has_finished(tablero):
-   return not np.any(tablero == 0)
+def has_finished(board):
+   return not np.any(board == 0)
 
-def get_results(tablero):
-  white_points = np.count_nonzero(tablero==1)
-  black_points = np.count_nonzero(tablero==2)
+def get_results(board):
+  white_points = np.count_nonzero(board==1)
+  black_points = np.count_nonzero(board==2)
   return (white_points, black_points)
 
-class Othello:
+class OthelloGame:
 
-  tablero = None
+  board = None
   def __init__(self):
-      self.tablero = crear_tablero()
+      self.board = create_new_board()
 
-  def jugar_movimiento(self, posicion,jugador):
-    if not comprobar_validez_movimiento(self.tablero, posicion, jugador):
+  def play_move(self, posicion,jugador):
+    if not check_valid_move(self.board, posicion, jugador):
       raise ValueError("Movimiento no valido")
 
-    self.tablero = actualizar_tablero(self.tablero, posicion, jugador)
+    self.board = update_board(self.board, posicion, jugador)
 
   def get_valid_moves(self, jugador):
-      return calcular_movimentos_validos(self.tablero, jugador)
+      return get_valid_moves(self.board, jugador)
 
   def has_finished(self):
-     return has_finished(self.tablero)
+     return has_finished(self.board)
 
   def get_results(self):
-     return get_results(self.tablero)
+     return get_results(self.board)
