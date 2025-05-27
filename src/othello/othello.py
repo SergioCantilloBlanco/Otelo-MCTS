@@ -85,7 +85,9 @@ def check_valid_move(board, position, player):
     return False
 
 def has_finished(board):
-   return not np.any(board == 0)
+   mov_1  = get_valid_moves(board, 1)
+   mov_2  = get_valid_moves(board, 2)
+   return len(mov_1) + len(mov_2) == 0
 
 def get_results(board):
   white_points = np.count_nonzero(board==1)
@@ -112,7 +114,7 @@ class OthelloGame:
   def get_valid_moves(self, jugador):
       return get_valid_moves(self.board, jugador)
 
-  def has_finished(self):
+  def   has_finished(self):
      return has_finished(self.board)
 
   def get_results(self):

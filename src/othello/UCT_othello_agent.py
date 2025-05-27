@@ -12,9 +12,11 @@ class UCTOtelloAgent(OthelloAgent):
 
   def choose_move(self, game: OthelloGame ):
       root = Node(game, self.player )
-      for i in range(1):
+      n = 20
+      for i in range(n):
+          print(f"Iteration {i+1}/{n}")
           vl = self.tree_policy(root)
-          delta = self.default_policy(vl.state)
+          delta = self.default_policy(vl.state, vl.player)
           self.backup_negamax(vl, delta)
       return self.best_child(root,0).previous_action
     
@@ -27,17 +29,18 @@ class UCTOtelloAgent(OthelloAgent):
            else:
                vertex = self.best_child(vertex, self.Cp)
         
-       pass
+       return vertex
 
   def expand(self, parent):
         
         action = parent.unused_actions.pop(0)
         state = parent.state.play_move(action, parent.player)
-        next_player =  2 if parent.player ==1 else 1
+        next_player =  2 if parent.player == 1 else 1
         if not state.get_valid_moves(next_player):
             next_player = parent.player
         child = Node(state,next_player,action,parent)
         parent.children.append(child)
+        print(f"Expanding {parent} using action {action} to child {child}")
         return child
 
   def best_child(self, node: Node, c):
@@ -51,15 +54,16 @@ class UCTOtelloAgent(OthelloAgent):
         
         return bestChild
 
-  def default_policy(self, game: OthelloGame):
+  def default_policy(self, game: OthelloGame, player):
         state = OthelloGame(game.board.copy())
-        player = self.player
         while(not state.has_finished()):
           if not state.get_valid_moves(player):
                player = 2 if player==1 else 1
                continue
           action = random.choice(state.get_valid_moves(player))
           state = state.play_move(action,player)
+          #print(f"Player {player} played action {action}")
+          #print(state.board)
           player = 2 if player==1 else 1
         results = state.get_results()
 

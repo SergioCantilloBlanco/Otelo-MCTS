@@ -9,14 +9,16 @@ game = OthelloGame()
 current_player = 2
 
 player1 = UCTOtelloAgent(1)
-player2 = RandomOthelloAgent(2)
+player2 = UCTOtelloAgent(2)
 
 while not game.has_finished():
   draw_board(game.board)
   input()
   if game.get_valid_moves(current_player) != []:
       active_player = player1 if current_player==1 else player2
-      game = game.play_move(active_player.choose_move(game), current_player)
+      move = active_player.choose_move(game)
+      print(f"Player {current_player} played {move}")
+      game = game.play_move(move, current_player)
 
   if current_player ==1:
      current_player = 2
