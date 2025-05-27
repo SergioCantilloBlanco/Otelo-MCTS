@@ -1,5 +1,5 @@
 import random
-from math import sqrt
+from math import inf, log, sqrt
 
 from node import Node
 from othello_agent import OthelloAgent
@@ -7,20 +7,25 @@ from othello_agent import OthelloAgent
 from othello import OthelloGame, update_board
 
 
-class RandomOthelloAgent(OthelloAgent):
+class UCTOtelloAgent(OthelloAgent):
   Cp = 1/sqrt(2)
 
   def choose_move(self, game: OthelloGame ):
-       pass
+      root = Node(game, self.player )
+      for i in range(1):
+          vl = self.tree_policy(root)
+          delta = self.default_policy(vl.state)
+          self.backup_negamax(vl, delta)
+      return self.best_child(root,0).previous_action
     
   
-  def treePolicy(self, node: Node):
+  def tree_policy(self, node: Node):
        vertex  = node
        while not vertex.state.has_finished():
            if not vertex.is_fully_expanded():
                return self.expand(vertex)
            else:
-               vertex = self.bestChild(vertex, self.Cp)
+               vertex = self.best_child(vertex, self.Cp)
         
        pass
 
@@ -33,20 +38,28 @@ class RandomOthelloAgent(OthelloAgent):
             next_player = parent.player
         child = Node(state,next_player,action,parent)
         parent.children.append(child)
-        pass
+        return child
 
-  def bestChild(self, node: Node, c):
-        pass
+  def best_child(self, node: Node, c):
+        bestChild=None
+        maxValue= -inf
+        for child in node.children:
+            value = child.accumulated_rewards/child.visits + c* sqrt((2*log(node.visits))/child.visits)
+            if value > maxValue:
+                maxValue = value
+                bestChild = child
+        
+        return bestChild
 
-  def defaultPolicy(self, game: OthelloGame):
-        state = game
+  def default_policy(self, game: OthelloGame):
+        state = OthelloGame(game.board.copy())
         player = self.player
         while(not state.has_finished()):
           if not state.get_valid_moves(player):
                player = 2 if player==1 else 1
                continue
           action = random.choice(state.get_valid_moves(player))
-          state.play_move(self, action,player)
+          state = state.play_move(action,player)
           player = 2 if player==1 else 1
         results = state.get_results()
 
@@ -56,7 +69,13 @@ class RandomOthelloAgent(OthelloAgent):
         return 1 if self.player == winner else -1
 
 
-  def backups():
-        pass
+  def backup_negamax(self, node: Node, delta):
+        node_to_propagate = node
+        while node_to_propagate != None:
+            node_to_propagate.visits += 1
+            node_to_propagate.accumulated_rewards += delta
+            if node_to_propagate.parent is not None and node_to_propagate.player != node_to_propagate.parent.player:
+              delta = -delta
+            node_to_propagate = node_to_propagate.parent
   
   

@@ -95,17 +95,19 @@ def get_results(board):
 class OthelloGame:
 
   board = None
-  def __init__(self):
-      self.board = create_new_board()
+  def __init__(self, board=None):
+      if board is None:
+          self.board = create_new_board()
+      else:
+          self.board = board
 
-  def __init__(self, board):
-      self.board = board
-
-  def play_move(self, posicion,jugador):
+  def play_move(self, posicion, jugador):
     if not check_valid_move(self.board, posicion, jugador):
-      raise ValueError("Movimiento no valido")
+        raise ValueError("Movimiento no válido")
 
-    self.board = update_board(self.board, posicion, jugador)
+    new_board = update_board(self.board.copy(), posicion, jugador)
+    return OthelloGame(new_board)
+
 
   def get_valid_moves(self, jugador):
       return get_valid_moves(self.board, jugador)
