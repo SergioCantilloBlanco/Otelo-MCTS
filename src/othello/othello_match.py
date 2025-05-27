@@ -13,7 +13,7 @@ player2 = UCTOtelloAgent(2)
 
 while not game.has_finished():
   draw_board(game.board)
-  input()
+  #input()
   if game.get_valid_moves(current_player) != []:
       active_player = player1 if current_player==1 else player2
       move = active_player.choose_move(game)
@@ -24,3 +24,7 @@ while not game.has_finished():
      current_player = 2
   else:
      current_player = 1
+
+white_points, black_points = game.get_results()
+print(f"white points:{white_points}")
+print(f"black points:{black_points}")

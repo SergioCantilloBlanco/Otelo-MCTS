@@ -12,9 +12,9 @@ class UCTOtelloAgent(OthelloAgent):
 
   def choose_move(self, game: OthelloGame ):
       root = Node(game, self.player )
-      n = 20
+      n = 5
       for i in range(n):
-          print(f"Iteration {i+1}/{n}")
+          #print(f"Iteration {i+1}/{n}")
           vl = self.tree_policy(root)
           delta = self.default_policy(vl.state, vl.player)
           self.backup_negamax(vl, delta)
@@ -40,7 +40,7 @@ class UCTOtelloAgent(OthelloAgent):
             next_player = parent.player
         child = Node(state,next_player,action,parent)
         parent.children.append(child)
-        print(f"Expanding {parent} using action {action} to child {child}")
+        #print(f"Expanding {parent} using action {action} to child {child}")
         return child
 
   def best_child(self, node: Node, c):

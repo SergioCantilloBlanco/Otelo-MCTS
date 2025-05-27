@@ -92,6 +92,7 @@ def has_finished(board):
 def get_results(board):
   white_points = np.count_nonzero(board==1)
   black_points = np.count_nonzero(board==2)
+ 
   return (white_points, black_points)
 
 class OthelloGame:
