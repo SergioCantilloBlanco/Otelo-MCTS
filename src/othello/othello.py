@@ -98,6 +98,9 @@ class OthelloGame:
   def __init__(self):
       self.board = create_new_board()
 
+  def __init__(self, board):
+      self.board = board
+
   def play_move(self, posicion,jugador):
     if not check_valid_move(self.board, posicion, jugador):
       raise ValueError("Movimiento no valido")
@@ -112,3 +115,4 @@ class OthelloGame:
 
   def get_results(self):
      return get_results(self.board)
+  
