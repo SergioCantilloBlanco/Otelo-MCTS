@@ -1,15 +1,16 @@
 from othello_interface import draw_board
 from random_othello_agent import RandomOthelloAgent
 from UCT_othello_agent import UCTOtelloAgent
-
+from manual_othello_agent import ManualOthelloAgent
 from othello import OthelloGame
+from UCT_othello_agent_timed import UCTOtelloAgentTimed
 
 game = OthelloGame()
 
 current_player = 2
 
 player1 = UCTOtelloAgent(1)
-player2 = UCTOtelloAgent(2)
+player2 = ManualOthelloAgent(2)
 
 while not game.has_finished():
   draw_board(game.board)
@@ -26,5 +27,8 @@ while not game.has_finished():
      current_player = 1
 
 white_points, black_points = game.get_results()
-print(f"white points:{white_points}")
-print(f"black points:{black_points}")
+print(f"White points:{white_points}")
+print(f"Black points:{black_points}")
+if(white_points==black_points):
+   print("It's a draw")
+print(f"Winner is {"white" if white_points> black_points else "black"}")

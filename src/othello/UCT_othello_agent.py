@@ -12,15 +12,15 @@ class UCTOtelloAgent(OthelloAgent):
 
   def choose_move(self, game: OthelloGame ):
       root = Node(game, self.player )
-      n = 5
+      n = 10
       for i in range(n):
           #print(f"Iteration {i+1}/{n}")
           vl = self.tree_policy(root)
           delta = self.default_policy(vl.state, vl.player)
           self.backup_negamax(vl, delta)
       return self.best_child(root,0).previous_action
-    
-  
+
+
   def tree_policy(self, node: Node):
        vertex  = node
        while not vertex.state.has_finished():
@@ -28,11 +28,11 @@ class UCTOtelloAgent(OthelloAgent):
                return self.expand(vertex)
            else:
                vertex = self.best_child(vertex, self.Cp)
-        
+
        return vertex
 
   def expand(self, parent):
-        
+
         action = parent.unused_actions.pop(0)
         state = parent.state.play_move(action, parent.player)
         next_player =  2 if parent.player == 1 else 1
@@ -51,7 +51,7 @@ class UCTOtelloAgent(OthelloAgent):
             if value > maxValue:
                 maxValue = value
                 bestChild = child
-        
+
         return bestChild
 
   def default_policy(self, game: OthelloGame, player):
@@ -81,5 +81,3 @@ class UCTOtelloAgent(OthelloAgent):
             if node_to_propagate.parent is not None and node_to_propagate.player != node_to_propagate.parent.player:
               delta = -delta
             node_to_propagate = node_to_propagate.parent
-  
-  
