@@ -111,11 +111,10 @@ class OthelloGame:
     new_board = update_board(self.board.copy(), posicion, jugador)
     return OthelloGame(new_board)
 
-
   def get_valid_moves(self, jugador):
       return get_valid_moves(self.board, jugador)
 
-  def   has_finished(self):
+  def has_finished(self):
      return has_finished(self.board)
 
   def get_results(self):
