@@ -10,7 +10,7 @@ class ManualOthelloAgent(OthelloAgent):
         print(f"Player {self.player}, waiting for click...")
 
         while True:
-            draw_board(game.board)
+            draw_board(game.board, valid_moves)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
