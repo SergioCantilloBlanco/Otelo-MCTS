@@ -1,4 +1,5 @@
 import random
+import copy
 from math import inf, log, sqrt
 
 from node import Node
@@ -12,9 +13,9 @@ class UCTOtelloAgent(OthelloAgent):
 
   def choose_move(self, game: OthelloGame ):
       root = Node(game, self.player )
-      n = 10
+      n = 50
       for i in range(n):
-          #print(f"Iteration {i+1}/{n}")
+          # print(f"Iteration {i+1}/{n}")
           vl = self.tree_policy(root)
           delta = self.default_policy(vl.state, vl.player)
           self.backup_negamax(vl, delta)
@@ -28,7 +29,6 @@ class UCTOtelloAgent(OthelloAgent):
                return self.expand(vertex)
            else:
                vertex = self.best_child(vertex, self.Cp)
-
        return vertex
 
   def expand(self, parent):
@@ -40,7 +40,7 @@ class UCTOtelloAgent(OthelloAgent):
             next_player = parent.player
         child = Node(state,next_player,action,parent)
         parent.children.append(child)
-        #print(f"Expanding {parent} using action {action} to child {child}")
+        # print(f"Expanding {parent} using action {action} to child {child}")
         return child
 
   def best_child(self, node: Node, c):
@@ -55,15 +55,15 @@ class UCTOtelloAgent(OthelloAgent):
         return bestChild
 
   def default_policy(self, game: OthelloGame, player):
-        state = OthelloGame(game.board.copy())
+        state = OthelloGame(game.board.copy(), copy.deepcopy(game.search_set))
         while(not state.has_finished()):
-          if not state.get_valid_moves(player):
+          valid_moves = state.get_valid_moves(player)
+          if not valid_moves:
                player = 2 if player==1 else 1
                continue
-          action = random.choice(state.get_valid_moves(player))
+          action = random.choice(valid_moves)
           state = state.play_move(action,player)
-          #print(f"Player {player} played action {action}")
-          #print(state.board)
+          # print(f"Player {player} played action {action}")
           player = 2 if player==1 else 1
         results = state.get_results()
 
