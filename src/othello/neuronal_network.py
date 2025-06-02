@@ -1,0 +1,34 @@
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras import layers, models
+
+
+def create_othello_model():
+    model = models.Sequential()
+    model.add(layers.Input(shape=(8, 8, 3)))  # Entrada: tablero 8x8 con 3 canales
+    model.add(layers.Conv2D(64, (3, 3), padding="same", activation="relu"))
+    model.add(layers.Conv2D(128, (3, 3), padding="same", activation="relu"))
+    model.add(layers.Conv2D(64, (3, 3), padding="same", activation="relu"))
+    model.add(layers.Flatten())
+    model.add(layers.Dense(128, activation="relu"))
+    model.add(layers.Dense(1, activation="tanh"))  # Salida entre [-1, 1]
+    return model
+
+def board_to_tensor(board):
+    tensor = np.zeros((8, 8, 3), dtype=np.float32)
+    tensor[:, :, 0] = (board == 0)  # canal 0: casillas vacías
+    tensor[:, :, 1] = (board == 1)  # canal 1: fichas blancas
+    tensor[:, :, 2] = (board == 2)  # canal 2: fichas negras
+    return tensor
+
+labeled_data = np.load("labeled_game_states.npy", allow_pickle=True)
+
+X = np.array([board_to_tensor(board) for board, _ in labeled_data])
+y = np.array([label for _, label in labeled_data], dtype=np.float32)
+
+model = create_othello_model()
+model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
+model.summary()
+
+model.fit(X, y, epochs=10, batch_size=32, validation_split=0.1)
+model.save("othello_training_model.h5")

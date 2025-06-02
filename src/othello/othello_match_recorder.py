@@ -9,7 +9,7 @@ from UCT_othello_agent import UCTOtelloAgent
 
 from othello import OthelloGame
 
-n = 200
+n = 20
 
 for i in tqdm(range(n)):
   game = OthelloGame()
@@ -20,6 +20,7 @@ for i in tqdm(range(n)):
   player2 = UCTOtelloAgent(2)
 
   while not game.has_finished():
+    draw_board(game.board)
     if game.get_valid_moves(current_player) != []:
         active_player = player1 if current_player==1 else player2
         move = active_player.choose_move(game)
@@ -46,4 +47,6 @@ for i in tqdm(range(n)):
     labeled_states.append((board, label))
 
 np.save("labeled_game_states.npy", np.array(labeled_states, dtype=object))
+  
+ 
 
