@@ -26,9 +26,12 @@ labeled_data = np.load("labeled_game_states.npy", allow_pickle=True)
 X = np.array([board_to_tensor(board) for board, _ in labeled_data])
 y = np.array([label for _, label in labeled_data], dtype=np.float32)
 
+print(len(X))
+print(len(y))
+
 model = create_othello_model()
 model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
 model.summary()
 
-model.fit(X, y, epochs=10, batch_size=32, validation_split=0.1)
+model.fit(X, y, epochs=500, batch_size=128, validation_split=0.1)
 model.save("othello_training_model.h5")

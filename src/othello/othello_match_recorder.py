@@ -10,7 +10,7 @@ from UCT_othello_agent import UCTOtelloAgent
 from othello import OthelloGame
 
 n = 400
-
+labeled_states = []
 for i in tqdm(range(n)):
   game = OthelloGame()
 
@@ -33,7 +33,6 @@ for i in tqdm(range(n)):
       current_player = 1
 
   white_points, black_points = game.get_results()
-  labeled_states = []
   for board, player in game_states:
     if white_points == black_points:
         label = 0
