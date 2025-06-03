@@ -13,7 +13,7 @@ class UCTOtelloAgent(OthelloAgent):
 
   def choose_move(self, game: OthelloGame ):
       root = Node(game, self.player )
-      n = 65
+      n = 50
       for i in range(n):
           # print(f"Iteration {i+1}/{n}")
           vl = self.tree_policy(root)

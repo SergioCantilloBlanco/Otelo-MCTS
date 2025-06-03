@@ -9,8 +9,8 @@ from UCT_othello_agent import UCTOtelloAgent
 
 from othello import OthelloGame
 
-n = 400
-labeled_states = []
+n = 100
+
 for i in tqdm(range(n)):
   game = OthelloGame()
 
