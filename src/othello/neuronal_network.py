@@ -5,14 +5,19 @@ from tensorflow.keras import layers, models
 
 def create_othello_model():
     model = models.Sequential()
-    model.add(layers.Input(shape=(8, 8, 3)))  # Entrada: tablero 8x8 con 3 canales
+    model.add(layers.Input(shape=(8, 8, 3)))
     model.add(layers.Conv2D(64, (3, 3), padding="same", activation="relu"))
+    model.add(layers.BatchNormalization())
     model.add(layers.Conv2D(128, (3, 3), padding="same", activation="relu"))
+    model.add(layers.BatchNormalization())
     model.add(layers.Conv2D(64, (3, 3), padding="same", activation="relu"))
-    model.add(layers.Flatten())
+    model.add(layers.BatchNormalization())
+    model.add(layers.GlobalAveragePooling2D())
     model.add(layers.Dense(128, activation="relu"))
-    model.add(layers.Dense(1, activation="tanh"))  # Salida entre [-1, 1]
+    model.add(layers.Dense(1, activation="tanh"))
     return model
+
+
 
 def board_to_tensor(board):
     tensor = np.zeros((8, 8, 3), dtype=np.float32)
@@ -33,10 +38,10 @@ def train():
     print(len(y))
 
     model = create_othello_model()
-    model.compile(optimizer="adam", loss='mean_squared_error', metrics=['mae'])
+    model.compile(optimizer="adam", loss=tf.keras.losses.Huber(), metrics=['mean_squared_error', 'mae'])
     model.summary()
 
-    model.fit(X, y, epochs=500, batch_size=32, validation_split=0.1)
+    model.fit(X, y, epochs=150, batch_size=32, validation_split=0.1)
     model.save("othello_training_model.h5")
 
 if __name__ == "__main__":
