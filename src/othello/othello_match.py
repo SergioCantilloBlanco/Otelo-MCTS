@@ -2,7 +2,7 @@ from manual_othello_agent import ManualOthelloAgent
 from othello_interface import draw_board
 from random_othello_agent import RandomOthelloAgent
 from UCT_othello_agent import UCTOtelloAgent
-from UCT_othello_agent_timed import UCTOtelloAgentTimed
+from neural_UCT_othello_agent import NeuralUCTOtelloAgent
 import numpy as np
 
 
@@ -12,8 +12,8 @@ game = OthelloGame()
 
 current_player = 2
 
-player1 = UCTOtelloAgent(1)
-player2 = UCTOtelloAgent(2)
+player1 = NeuralUCTOtelloAgent(1)
+player2 = NeuralUCTOtelloAgent(2)
 
 while not game.has_finished():
   draw_board(game.board)
