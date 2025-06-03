@@ -2,6 +2,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras import layers, models
 
+
 def create_othello_model():
     model = models.Sequential()
     model.add(layers.Input(shape=(8, 8, 3)))  # Entrada: tablero 8x8 con 3 canales

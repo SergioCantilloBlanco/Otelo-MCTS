@@ -1,5 +1,5 @@
-import random
 import copy
+import random
 from math import inf, log, sqrt
 
 from node import Node
@@ -11,10 +11,13 @@ from othello import OthelloGame, update_board
 class UCTOtelloAgent(OthelloAgent):
   Cp = 1/sqrt(2)
 
+  def __init__(self, player, n=10):
+    self.player = player
+    self.n = n
+
   def choose_move(self, game: OthelloGame ):
       root = Node(game, self.player )
-      n = 50
-      for i in range(n):
+      for i in range(self.n):
           # print(f"Iteration {i+1}/{n}")
           vl = self.tree_policy(root)
           delta = self.default_policy(vl.state, vl.player)

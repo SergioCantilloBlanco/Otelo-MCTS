@@ -1,10 +1,9 @@
+import numpy as np
 from manual_othello_agent import ManualOthelloAgent
+from neural_UCT_othello_agent import NeuralUCTOtelloAgent
 from othello_interface import draw_board
 from random_othello_agent import RandomOthelloAgent
 from UCT_othello_agent import UCTOtelloAgent
-from neural_UCT_othello_agent import NeuralUCTOtelloAgent
-import numpy as np
-
 
 from othello import OthelloGame
 
@@ -12,15 +11,14 @@ game = OthelloGame()
 
 current_player = 2
 
-player1 = NeuralUCTOtelloAgent(1)
-player2 = NeuralUCTOtelloAgent(2)
+player1 = UCTOtelloAgent(1)
+player2 = ManualOthelloAgent(2)
 
 while not game.has_finished():
   draw_board(game.board)
   if game.get_valid_moves(current_player) != []:
       valid_moves = game.get_valid_moves(current_player)
       draw_board(game.board, valid_moves)
-      # input()
       active_player = player1 if current_player==1 else player2
       move = active_player.choose_move(game)
       print(f"Player {current_player} played {move}")
@@ -39,4 +37,5 @@ print(f"White points:{white_points}")
 print(f"Black points:{black_points}")
 if(white_points==black_points):
    print("It's a draw")
+input()
 print(f"Winner is {"white" if white_points> black_points and black_points != white_points  else "black"}")
