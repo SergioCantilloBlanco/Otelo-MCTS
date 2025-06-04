@@ -53,8 +53,8 @@ class UCTOtelloAgent(OthelloAgent):
   def best_child(self, node: Node, c):
         bestChild=None
         maxValue= -inf
+        precalc_2_log_node_visits = (2*log(node.visits))
         for child in node.children:
-            precalc_2_log_node_visits = (2*log(node.visits))
             value = child.accumulated_rewards/child.visits + c * sqrt(precalc_2_log_node_visits/child.visits)
             if value > maxValue:
                 maxValue = value
@@ -63,6 +63,7 @@ class UCTOtelloAgent(OthelloAgent):
         return bestChild
 
   def default_policy(self, game: OthelloGame, player):
+
         state = OthelloGame(game.board, game.search_set)
         while(not state.has_finished()):
           valid_moves = state.get_valid_moves(player)
