@@ -6,11 +6,13 @@ from othello_interface import draw_board
 from random_othello_agent import RandomOthelloAgent
 from tqdm import tqdm
 from UCT_othello_agent import UCTOtelloAgent
-# from neural_UCT_othello_agent import NeuralUCTOtelloAgent
 
 from othello import OthelloGame
 
-n = 100
+# from neural_UCT_othello_agent import NeuralUCTOtelloAgent
+
+
+n = 50
 
 
 agent_1_wins = 0
@@ -21,8 +23,8 @@ for i in tqdm(range(n)):
   game = OthelloGame()
 
   current_player = 2
-  player1 = UCTOtelloAgent(1, 50)
-  player2 = RandomOthelloAgent(2)
+  player2 = UCTOtelloAgent(2, 100)
+  player1 = UCTOtelloAgent(1, 10)
   while not game.has_finished():
     draw_board(game.board)
     if game.get_valid_moves(current_player) != []:

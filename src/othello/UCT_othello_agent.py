@@ -87,5 +87,4 @@ class UCTOtelloAgent(OthelloAgent):
         while node_to_propagate != None:
             node_to_propagate.visits += 1
             node_to_propagate.accumulated_rewards += delta
-            delta = -delta
             node_to_propagate = node_to_propagate.parent
