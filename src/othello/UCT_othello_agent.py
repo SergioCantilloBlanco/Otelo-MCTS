@@ -1,4 +1,3 @@
-import copy
 import random
 from math import inf, log, sqrt
 
@@ -26,7 +25,7 @@ class UCTOtelloAgent(OthelloAgent):
 
 
   def tree_policy(self, node: Node):
-       vertex  = node
+       vertex = node
        while not vertex.state.has_finished():
            if not vertex.is_fully_expanded():
                return self.expand(vertex)
@@ -39,18 +38,24 @@ class UCTOtelloAgent(OthelloAgent):
         action = parent.unused_actions.pop(0)
         state = parent.state.play_move(action, parent.player)
         next_player =  2 if parent.player == 1 else 1
-        if not state.get_valid_moves(next_player):
-            next_player = parent.player
         child = Node(state,next_player,action,parent)
         parent.children.append(child)
         # print(f"Expanding {parent} using action {action} to child {child}")
+
+        if not child.unused_actions and not child.state.has_finished():
+            second_next_player =  2 if child.player == 1 else 1
+            second_child = Node(state, second_next_player, None, child)
+            child.children.append(second_child)
+            return second_child
+
         return child
 
   def best_child(self, node: Node, c):
         bestChild=None
         maxValue= -inf
         for child in node.children:
-            value = child.accumulated_rewards/child.visits + c* sqrt((2*log(node.visits))/child.visits)
+            precalc_2_log_node_visits = (2*log(node.visits))
+            value = child.accumulated_rewards/child.visits + c * sqrt(precalc_2_log_node_visits/child.visits)
             if value > maxValue:
                 maxValue = value
                 bestChild = child
@@ -58,7 +63,7 @@ class UCTOtelloAgent(OthelloAgent):
         return bestChild
 
   def default_policy(self, game: OthelloGame, player):
-        state = OthelloGame(game.board.copy(), copy.deepcopy(game.search_set))
+        state = OthelloGame(game.board, game.search_set)
         while(not state.has_finished()):
           valid_moves = state.get_valid_moves(player)
           if not valid_moves:
@@ -81,6 +86,5 @@ class UCTOtelloAgent(OthelloAgent):
         while node_to_propagate != None:
             node_to_propagate.visits += 1
             node_to_propagate.accumulated_rewards += delta
-            if node_to_propagate.parent is not None and node_to_propagate.player != node_to_propagate.parent.player:
-              delta = -delta
+            delta = -delta
             node_to_propagate = node_to_propagate.parent

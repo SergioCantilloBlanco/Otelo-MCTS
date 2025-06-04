@@ -1,6 +1,6 @@
 import numpy as np
 from manual_othello_agent import ManualOthelloAgent
-from neural_UCT_othello_agent import NeuralUCTOtelloAgent
+# from neural_UCT_othello_agent import NeuralUCTOtelloAgent
 from othello_interface import draw_board
 from random_othello_agent import RandomOthelloAgent
 from UCT_othello_agent import UCTOtelloAgent
@@ -11,11 +11,10 @@ game = OthelloGame()
 
 current_player = 2
 
-player1 = UCTOtelloAgent(1)
+player1 = ManualOthelloAgent(1)
 player2 = ManualOthelloAgent(2)
 
 while not game.has_finished():
-  draw_board(game.board)
   if game.get_valid_moves(current_player) != []:
       valid_moves = game.get_valid_moves(current_player)
       draw_board(game.board, valid_moves)

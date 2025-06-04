@@ -1,11 +1,10 @@
 import numpy as np
-import copy
 
 directions = [(1,0), (-1,0), (0,1), (0,-1) , (1,1) , (1,-1), (-1,1) ,(-1,-1)]
 
 def create_new_board():
     board = np.zeros((8,8),dtype=int)
-    search_set = [[(3,3),(4,4)],[(4,3),(3,4)]]
+    search_set = (((3,3),(4,4)),((4,3),(3,4)))
 
     board[3,3] = 1
     board[4,4] = 1
@@ -13,17 +12,16 @@ def create_new_board():
     board[3,4] = 2
     return board, search_set
 
-def get_valid_moves(board, conjunto,  player):
+def get_valid_moves(board, search_set,  player):
 
     valid_moves = []
 
-    conj = copy.deepcopy(conjunto)
 
-    search_set = list(conj[0] if player == 2 else conj[1])
+    active_search_set = search_set[0] if player == 2 else search_set[1]
 
     remove_list= []
 
-    for tile in search_set:
+    for tile in active_search_set:
       is_enclosed = True
       for direction in directions:
         row, column = tile
@@ -39,12 +37,13 @@ def get_valid_moves(board, conjunto,  player):
       if is_enclosed:
         remove_list.append(tile)
 
-    for i in remove_list:
-        search_set.remove(i)
+    new_active_search_set = tuple(x for x in active_search_set if x not in remove_list)
 
-    new_search_set = [list(conj[0]), list(conj[1])]
-    new_search_set[0 if player == 2 else 1] = search_set
-    return valid_moves, new_search_set
+    search_set = list(search_set)
+    search_set[0 if player == 2 else 1] = new_active_search_set
+    search_set = tuple(search_set)
+
+    return valid_moves, search_set
 
 
 
@@ -72,12 +71,14 @@ def update_board(board, search_set, position, player):
       fila,columna = position
       board[fila,columna] = player
 
+      search_set = [list(search_set[0]), list(search_set[1])]
       search_set[0 if player == 1 else 1].append(position)
 
+
       for direccion in directions:
-        board, search_set = update_line(board.copy(), copy.deepcopy(search_set), position, player, direccion)
+        board, search_set = update_line(board, search_set, position, player, direccion)
 
-
+      search_set = (tuple(search_set[0]), tuple(search_set[1]))
       return board, search_set
 
 
@@ -114,8 +115,8 @@ def update_line(board, search_set, position, player, direction):
 
 
 def has_finished(board, search_set):
-   mov_1, ss  = get_valid_moves(board, copy.deepcopy(search_set),1)
-   mov_2, ss  = get_valid_moves(board,copy.deepcopy(ss), 2)
+   mov_1, ss  = get_valid_moves(board, search_set,1)
+   mov_2, ss  = get_valid_moves(board,ss, 2)
    return len(mov_1) + len(mov_2) == 0 ,ss
 
 def get_results(board):
@@ -135,17 +136,17 @@ class OthelloGame:
           self.board = board
           if search_set == None:
             raise ReferenceError("Non updated search set")
-          self.search_set = copy.deepcopy(search_set)
+          self.search_set = search_set
 
 
   def play_move(self, posicion, jugador):
-    new_board, search_set = update_board(self.board.copy(),copy.deepcopy(self.search_set), posicion, jugador)
+    new_board, search_set = update_board(np.copy(self.board),self.search_set, posicion, jugador)
     return OthelloGame(new_board, search_set)
 
 
   def get_valid_moves(self, jugador):
       valid_moves, search_set =  get_valid_moves(self.board, self.search_set, jugador)
-      self.search_set = copy.deepcopy(search_set)
+      self.search_set = search_set
       return valid_moves
 
   def has_finished(self):

@@ -6,26 +6,23 @@ from othello_interface import draw_board
 from random_othello_agent import RandomOthelloAgent
 from tqdm import tqdm
 from UCT_othello_agent import UCTOtelloAgent
+# from neural_UCT_othello_agent import NeuralUCTOtelloAgent
 
 from othello import OthelloGame
 
-n = 15
+n = 100
 
-labeled_states = []
 
-agent1wins = 0
-agent2wins = 0
+agent_1_wins = 0
+agent_2_wins = 0
 draws = 0
-agent1points = 0
-agent2points = 0
 
 for i in tqdm(range(n)):
   game = OthelloGame()
 
   current_player = 2
-  player2 = UCTOtelloAgent(2, 30)
-  player1 = RandomOthelloAgent(1)
-
+  player1 = UCTOtelloAgent(1, 50)
+  player2 = RandomOthelloAgent(2)
   while not game.has_finished():
     draw_board(game.board)
     if game.get_valid_moves(current_player) != []:
@@ -39,16 +36,17 @@ for i in tqdm(range(n)):
       current_player = 1
 
   white_points, black_points = game.get_results()
+  draw_board(game.board)
   if white_points == black_points:
+    print("DRAW")
     draws += 1
-  elif white_points > black_points: 
-    agent1wins += 1
+  elif white_points > black_points:
+    agent_1_wins += 1
+    print("White Wins")
   else:
-    agent2wins  += 1
+    agent_2_wins  += 1
+    print("Black Wins")
 
-  agent1points += white_points
-  agent2points += black_points
-
-print(agent1wins/n*100)
-print(agent2wins/n*100)
-
+print(f"Agent 1 wins {(agent_1_wins/n)*100}")
+print(f"Agent 2 wins {(agent_2_wins/n)*100}")
+print(f"Draws {(draws/n)*100}")
