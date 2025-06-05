@@ -10,10 +10,16 @@ def create_othello_model():
     model.add(layers.BatchNormalization())
     model.add(layers.Conv2D(128, (3, 3), padding="same", activation="relu"))
     model.add(layers.BatchNormalization())
+    model.add(layers.Conv2D(128, (3, 3), padding="same", activation="relu"))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Conv2D(64, (3, 3), padding="same", activation="relu"))
+    model.add(layers.BatchNormalization())
     model.add(layers.Conv2D(64, (3, 3), padding="same", activation="relu"))
     model.add(layers.BatchNormalization())
     model.add(layers.GlobalAveragePooling2D())
     model.add(layers.Dense(128, activation="relu"))
+    model.add(layers.Dense(128, activation="relu"))
+    model.add(layers.Dense(64, activation="relu"))
     model.add(layers.Dense(1, activation="tanh"))
     return model
 
@@ -29,7 +35,7 @@ def board_to_tensor(board):
 
 
 def train():
-    labeled_data = np.load("labeled_game_states.npy", allow_pickle=True)
+    labeled_data = np.load("uct_100_700_games.npy", allow_pickle=True)
 
     X = np.array([board_to_tensor(board) for board, _ in labeled_data])
     y = np.array([label for _, label in labeled_data], dtype=np.float32)
@@ -41,7 +47,7 @@ def train():
     model.compile(optimizer="adam", loss=tf.keras.losses.Huber(), metrics=['mean_squared_error', 'mae'])
     model.summary()
 
-    model.fit(X, y, epochs=150, batch_size=32, validation_split=0.1)
+    model.fit(X, y, epochs=200, batch_size=32, validation_split=0.1)
     model.save("othello_training_model.h5")
 
 if __name__ == "__main__":

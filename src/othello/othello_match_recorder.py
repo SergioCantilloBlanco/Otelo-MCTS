@@ -5,11 +5,11 @@ from manual_othello_agent import ManualOthelloAgent
 from othello_interface import draw_board
 from random_othello_agent import RandomOthelloAgent
 from tqdm import tqdm
-from UCT_othello_agent import NeuralUCTOtelloAgent
+from UCT_othello_agent import UCTOtelloAgent
 
 from othello import OthelloGame
 
-n = 25
+n = 700
 
 labeled_states = []
 for i in tqdm(range(n)):
@@ -17,8 +17,8 @@ for i in tqdm(range(n)):
 
   current_player = 2
   game_states = [(game.board, current_player)]
-  player1 = UCTOtelloAgent(1)
-  player2 = NeuralUCTOtelloAgent(2)
+  player1 = UCTOtelloAgent(1,150)
+  player2 = UCTOtelloAgent(2,150)
 
   while not game.has_finished():
     # draw_board(game.board)

@@ -4,7 +4,7 @@ from UCT_othello_agent import UCTOtelloAgent
 
 from othello import OthelloGame
 import numpy as np
-model = tf.keras.models.load_model("othello_training_model.h5")
+model = tf.keras.models.load_model("othello_brain_v1.1.h5")
 
 class NeuralUCTOtelloAgent(UCTOtelloAgent):
 
