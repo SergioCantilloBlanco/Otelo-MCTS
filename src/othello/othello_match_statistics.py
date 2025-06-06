@@ -1,7 +1,7 @@
 import copy
 
 import numpy as np
-from manual_othello_agent import ManualOthelloAgent
+# from manual_othello_agent import ManualOthelloAgent
 from othello_interface import draw_board
 from random_othello_agent import RandomOthelloAgent
 from tqdm import tqdm
@@ -9,10 +9,10 @@ from UCT_othello_agent import UCTOtelloAgent
 
 from othello import OthelloGame
 
-from neural_UCT_othello_agent import NeuralUCTOtelloAgent
+# from neural_UCT_othello_agent import NeuralUCTOtelloAgent
 
 
-n = 30
+n = 20
 
 
 agent_1_wins = 0
@@ -23,10 +23,10 @@ for i in tqdm(range(n)):
   game = OthelloGame()
 
   current_player = 2
-  player1 = NeuralUCTOtelloAgent(1, 100)
-  player2 = RandomOthelloAgent(2)
+  player1 = UCTOtelloAgent(1, 250)
+  player2 = UCTOtelloAgent(2,250)
   while not game.has_finished():
-    draw_board(game.board)
+    # draw_board(game.board)
     if game.get_valid_moves(current_player) != []:
         active_player = player1 if current_player==1 else player2
         move = active_player.choose_move(game)
@@ -38,7 +38,7 @@ for i in tqdm(range(n)):
       current_player = 1
 
   white_points, black_points = game.get_results()
-  draw_board(game.board)
+  # draw_board(game.board)
   if white_points == black_points:
     draws += 1
   elif white_points > black_points:

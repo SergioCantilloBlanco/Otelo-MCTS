@@ -1,5 +1,5 @@
 import tensorflow as tf
-from neuronal_network import board_to_tensor
+from othello.neural_network import board_to_tensor
 from UCT_othello_agent import UCTOtelloAgent
 
 from othello import OthelloGame

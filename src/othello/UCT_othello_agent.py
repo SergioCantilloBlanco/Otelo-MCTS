@@ -63,28 +63,31 @@ class UCTOtelloAgent(OthelloAgent):
         return bestChild
 
   def default_policy(self, game: OthelloGame, player):
+      state = OthelloGame(game.board, game.search_set)
+      current_player = player  # Keep track of the player for this simulation
 
-        state = OthelloGame(game.board, game.search_set)
-        while(not state.has_finished()):
-          valid_moves = state.get_valid_moves(player)
+      while(not state.has_finished()):
+          valid_moves = state.get_valid_moves(current_player)
           if not valid_moves:
-               player = 2 if player==1 else 1
-               continue
+              current_player = 2 if current_player == 1 else 1
+              continue
           action = random.choice(valid_moves)
-          state = state.play_move(action,player)
-          # print(f"Player {player} played action {action}")
-          player = 2 if player==1 else 1
-        results = state.get_results()
+          state = state.play_move(action, current_player)
+          current_player = 2 if current_player == 1 else 1
 
-        if results[0] == results[1]:
+      results = state.get_results()
+      if results[0] == results[1]:
           return 0
-        winner = 1 if results[0] > results[1] else 2
-        return 1 if self.player == winner else -1
+      winner = 1 if results[0] > results[1] else 2
+
+      return 1 if player == winner else -1
 
 
   def backup_negamax(self, node: Node, delta):
         node_to_propagate = node
+        current_delta = -delta
         while node_to_propagate != None:
             node_to_propagate.visits += 1
-            node_to_propagate.accumulated_rewards += delta
+            node_to_propagate.accumulated_rewards += current_delta
             node_to_propagate = node_to_propagate.parent
+            current_delta = -current_delta
