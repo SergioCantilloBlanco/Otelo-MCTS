@@ -12,10 +12,7 @@ def create_othello_model():
     model.add(layers.BatchNormalization())
     model.add(layers.Conv2D(128, (3, 3), padding="same", activation="relu"))
     model.add(layers.BatchNormalization())
-    model.add(layers.Conv2D(64, (3, 3), padding="same", activation="relu"))
-    model.add(layers.BatchNormalization())
-    model.add(layers.Conv2D(64, (3, 3), padding="same", activation="relu"))
-    model.add(layers.BatchNormalization())
+
     model.add(layers.GlobalAveragePooling2D())
     model.add(layers.Dense(128, activation="relu"))
     model.add(layers.Dense(128, activation="relu"))

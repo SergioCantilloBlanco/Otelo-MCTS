@@ -8,11 +8,11 @@ from othello import OthelloGame, update_board
 
 
 class UCTOtelloAgent(OthelloAgent):
-  Cp = 1/sqrt(2)
 
-  def __init__(self, player, n=10):
+  def __init__(self, player, n=10, Cp =1/sqrt(2)):
     self.player = player
     self.n = n
+    self.Cp =Cp
 
   def choose_move(self, game: OthelloGame ):
       root = Node(game, self.player )

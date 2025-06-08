@@ -4,15 +4,15 @@ from manual_othello_agent import ManualOthelloAgent
 from othello_interface import draw_board
 from random_othello_agent import RandomOthelloAgent
 from UCT_othello_agent import UCTOtelloAgent
-
+from math import sqrt
 from othello import OthelloGame
 
 game = OthelloGame()
 
 current_player = 2
 
-player1 =  RandomOthelloAgent(1)
-player2 = UCTOtelloAgent(2, 50)
+player1 =  ManualOthelloAgent(1)
+player2 = UCTOtelloAgent(2,1000,sqrt(2))
 
 while not game.has_finished():
   if game.get_valid_moves(current_player) != []:

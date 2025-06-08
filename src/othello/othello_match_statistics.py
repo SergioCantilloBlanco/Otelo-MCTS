@@ -6,6 +6,7 @@ from othello_interface import draw_board
 from random_othello_agent import RandomOthelloAgent
 from tqdm import tqdm
 from UCT_othello_agent import UCTOtelloAgent
+from math import sqrt
 
 from othello import OthelloGame
 
@@ -23,8 +24,8 @@ for i in tqdm(range(n)):
   game = OthelloGame()
 
   current_player = 2
-  player1 = UCTOtelloAgent(1, 250)
-  player2 = UCTOtelloAgent(2,250)
+  player1 = UCTOtelloAgent(1, 250, sqrt(2))
+  player2 = UCTOtelloAgent(2,500, sqrt(2))
   while not game.has_finished():
     # draw_board(game.board)
     if game.get_valid_moves(current_player) != []:
